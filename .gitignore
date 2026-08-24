@@ -1,0 +1,29 @@
+# dependências
+node_modules/
+frontend/node_modules/
+api/node_modules/
+
+# build do Next.js (frontend/, exportado como site estático)
+frontend/.next/
+frontend/out/
+frontend/next-env.d.ts
+frontend/*.tsbuildinfo
+
+# Azure Functions local
+api/local.settings.json
+api/bin/
+api/obj/
+
+# variáveis de ambiente locais
+.env
+.env.local
+.env*.local
+
+# Azure Static Web Apps CLI
+.swa/
+
+# sistema operacional / editor
+.DS_Store
+*.log
+npm-debug.log*
+.vscode/

@@ -1,0 +1,13 @@
+{
+  "name": "ativos-ti-api",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Azure Functions (mock) para o Sistema de Controle de Ativos de Informática — projeto PJBL",
+  "main": "src/functions/*.js",
+  "scripts": {
+    "start": "func start"
+  },
+  "dependencies": {
+    "@azure/functions": "^4.5.0"
+  }
+}

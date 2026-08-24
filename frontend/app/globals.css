@@ -1,0 +1,19 @@
+@import "tailwindcss";
+
+:root {
+  --navy: #183a6e;
+  --blue: #228be6;
+  --bg: #faf9f5;
+  --surface: #ffffff;
+  --text: #1c2733;
+  --text-muted: #5c6b7a;
+  --border: #e4e2da;
+  --success: #2f9e44;
+  --warning: #f08c00;
+  --danger: #e03131;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Helvetica, Arial, sans-serif;
+}
