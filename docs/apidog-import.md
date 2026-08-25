@@ -4,7 +4,7 @@ Todos os dados mock deste projeto ficam isolados em arquivos JSON dentro de
 `api/src/data/`, separados da lógica das Azure Functions. Isso permite usar
 o Apidog como origem dos mocks **sem alterar nenhum código** — o frontend já
 lê a URL base da API de uma variável de ambiente
-(`NEXT_PUBLIC_API_BASE_URL`, em `frontend/lib/api.js`).
+(`NEXT_PUBLIC_API_BASE_URL`, em `frontend/lib/api.ts`).
 
 ## Passo a passo
 
@@ -49,7 +49,7 @@ lê a URL base da API de uma variável de ambiente
 
 - `api/src/functions/*.js` contém apenas a lógica (rota, agregações);
 - `api/src/data/*.json` contém apenas os dados mock;
-- `frontend/lib/api.js` não conhece a origem dos dados — só sabe o caminho
+- `frontend/lib/api.ts` não conhece a origem dos dados — só sabe o caminho
   (`/ativos`, `/dashboard` etc.) e lê a URL base de uma env var.
 
 Essa separação é o que permite trocar "Azure Function local" por "Apidog"
