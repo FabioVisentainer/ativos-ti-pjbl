@@ -1,0 +1,10 @@
+[
+  { "id": 1, "nome": "Marina Alves", "matricula": "0041287", "setor": "Financeiro", "situacao": "Ativo" },
+  { "id": 2, "nome": "Carlos Nunes", "matricula": "0038114", "setor": "Suporte", "situacao": "Ativo" },
+  { "id": 3, "nome": "Priscila Rocha", "matricula": "0052900", "setor": "Comercial", "situacao": "Ativo" },
+  { "id": 4, "nome": "Eduardo Lima", "matricula": "0029045", "setor": "TI", "situacao": "Ativo" },
+  { "id": 5, "nome": "Renata Farias", "matricula": "0060221", "setor": "RH", "situacao": "Ativo" },
+  { "id": 6, "nome": "Tiago Moraes", "matricula": "0011903", "setor": "Logística", "situacao": "Inativo" },
+  { "id": 7, "nome": "Juliana Peres", "matricula": "0058812", "setor": "Recursos Humanos", "situacao": "Ativo" },
+  { "id": 8, "nome": "Fernanda Ribeiro", "matricula": "0044210", "setor": "Marketing", "situacao": "Ativo" }
+]

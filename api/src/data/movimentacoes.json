@@ -1,0 +1,7 @@
+[
+  { "id": 1, "data": "2026-08-22", "numeroPatrimonio": "PAT-0004", "ativo": "Apple MacBook Air M2", "operacao": "Alocação", "colaborador": "Fernanda Ribeiro", "registradoPor": "Eduardo Lima" },
+  { "id": 2, "data": "2026-08-21", "numeroPatrimonio": "PAT-0002", "ativo": "Lenovo ThinkPad E14", "operacao": "Envio para manutenção", "colaborador": null, "registradoPor": "Eduardo Lima" },
+  { "id": 3, "data": "2026-08-19", "numeroPatrimonio": "PAT-0007", "ativo": "Samsung S27A400", "operacao": "Alocação", "colaborador": "Marina Alves", "registradoPor": "Ana Prado" },
+  { "id": 4, "data": "2026-08-18", "numeroPatrimonio": "PAT-0008", "ativo": "Dell Vostro 3520", "operacao": "Baixa por obsolescência", "colaborador": null, "registradoPor": "Ana Prado" },
+  { "id": 5, "data": "2026-08-15", "numeroPatrimonio": "PAT-0011", "ativo": "Dell KB216", "operacao": "Devolução", "colaborador": "Eduardo Lima", "registradoPor": "Eduardo Lima" }
+]

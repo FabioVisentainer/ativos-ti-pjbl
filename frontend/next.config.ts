@@ -1,5 +1,6 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
   // Exporta o site como HTML/CSS/JS estático, formato exigido pelo
   // Azure Static Web Apps (build de "Static HTML" / "Custom").
   output: "export",

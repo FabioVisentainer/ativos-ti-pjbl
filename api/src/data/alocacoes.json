@@ -1,0 +1,9 @@
+[
+  { "id": 1, "numeroPatrimonio": "PAT-0001", "equipamento": "Dell Latitude 5440", "colaborador": "Marina Alves", "setor": "Financeiro", "dataRetirada": "2023-03-14" },
+  { "id": 2, "numeroPatrimonio": "PAT-0007", "equipamento": "Samsung S27A400", "colaborador": "Marina Alves", "setor": "Financeiro", "dataRetirada": "2023-03-14" },
+  { "id": 3, "numeroPatrimonio": "PAT-0004", "equipamento": "Apple MacBook Air M2", "colaborador": "Fernanda Ribeiro", "setor": "Marketing", "dataRetirada": "2023-11-20" },
+  { "id": 4, "numeroPatrimonio": "PAT-0009", "equipamento": "Logitech M170", "colaborador": "Fernanda Ribeiro", "setor": "Marketing", "dataRetirada": "2023-11-20" },
+  { "id": 5, "numeroPatrimonio": "PAT-0005", "equipamento": "Logitech H390", "colaborador": "Eduardo Lima", "setor": "TI", "dataRetirada": "2023-05-06" },
+  { "id": 6, "numeroPatrimonio": "PAT-0011", "equipamento": "Dell KB216", "colaborador": "Eduardo Lima", "setor": "TI", "dataRetirada": "2023-05-06" },
+  { "id": 7, "numeroPatrimonio": "PAT-0012", "equipamento": "HP ProBook 440", "colaborador": "Juliana Peres", "setor": "Recursos Humanos", "dataRetirada": "2022-06-30" }
+]

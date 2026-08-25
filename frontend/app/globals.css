@@ -2,15 +2,16 @@
 
 :root {
   --navy: #183a6e;
-  --blue: #228be6;
-  --bg: #faf9f5;
+  --topbar: #1e5089;
+  --blue: #2569c9;
+  --bg: #f5f7fa;
   --surface: #ffffff;
   --text: #1c2733;
   --text-muted: #5c6b7a;
   --border: #e4e2da;
   --success: #2f9e44;
-  --warning: #f08c00;
-  --danger: #e03131;
+  --warning: #b8860b;
+  --danger: #c0392b;
 }
 
 body {
