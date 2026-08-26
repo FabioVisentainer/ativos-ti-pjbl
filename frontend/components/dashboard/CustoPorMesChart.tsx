@@ -2,12 +2,17 @@ import Card from "@/components/ui/Card";
 import { formatCurrency } from "@/lib/format";
 import type { CustoPorMes } from "@/lib/types";
 
-export default function CustoPorMesChart({ dados }: { dados: CustoPorMes[] }) {
+export default function CustoPorMesChart({ dados = [] }: { dados?: CustoPorMes[] }) {
   const max = Math.max(...dados.map((m) => m.valor), 1);
 
   return (
     <Card>
       <h2 className="text-base font-semibold mb-5">Custo de manutenção por mês</h2>
+      {dados.length === 0 ? (
+        <p className="text-sm text-[var(--text-muted)]">
+          Sem manutenções registradas no período.
+        </p>
+      ) : (
       <div className="flex items-stretch gap-3 h-36">
         {dados.map((m) => (
           <div
@@ -23,6 +28,7 @@ export default function CustoPorMesChart({ dados }: { dados: CustoPorMes[] }) {
           </div>
         ))}
       </div>
+      )}
     </Card>
   );
 }

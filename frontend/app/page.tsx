@@ -63,10 +63,10 @@ export default function DashboardPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-6">
         <StatusBreakdown items={statusList} />
-        <CustoPorMesChart dados={data.custoManutencaoPorMes} />
+        <CustoPorMesChart dados={data.custoManutencaoPorMes ?? []} />
       </div>
 
-      <MovimentacoesTable itens={data.ultimasMovimentacoes} />
+      <MovimentacoesTable itens={data.ultimasMovimentacoes ?? []} />
     </div>
   );
 }
