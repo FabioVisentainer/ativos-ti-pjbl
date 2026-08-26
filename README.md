@@ -158,7 +158,15 @@ NEXT_PUBLIC_API_BASE_URL=http://localhost:7071/api
 ## Mock com Apidog
 
 Este projeto usa o Apidog como origem dos mocks (ver passo a passo completo
-em [`docs/apidog-import.md`](./docs/apidog-import.md)). Depois de publicar
-o mock, preencha aqui:
+em [`docs/apidog-import.md`](./docs/apidog-import.md)). Os 6 endpoints GET
+(`/ativos`, `/colaboradores`, `/alocacoes`, `/manutencoes`, `/usuarios`,
+`/dashboard`) já estão publicados como mock no Apidog:
 
-- **URL base do mock no Apidog:** `<< preencher >>`
+- **URL base do mock no Apidog:** `https://mock.apidog.com/m1/1367360-1371779-default`
+
+Para o frontend consumir o Apidog em vez da Azure Function local, crie
+`frontend/.env.local` com:
+
+```bash
+NEXT_PUBLIC_API_BASE_URL=https://mock.apidog.com/m1/1367360-1371779-default
+```

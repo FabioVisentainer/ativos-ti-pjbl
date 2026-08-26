@@ -45,6 +45,16 @@ lê a URL base da API de uma variável de ambiente
    endpoints do Apidog automaticamente, sem nenhuma mudança de código.
 7. Anote a URL do mock do Apidog no `README.md` (seção "Mock com Apidog").
 
+## Status atual deste projeto
+
+Os 6 endpoints já estão publicados no Apidog, com "Exemplo de Resposta
+Primeiro" definido como prioridade do mock (garante que o JSON colado em
+cada endpoint seja retornado, em vez de dados aleatórios do Smart Mock):
+
+- **URL base do mock:** `https://mock.apidog.com/m1/1367360-1371779-default`
+- Rotas publicadas: `/ativos`, `/colaboradores`, `/alocacoes`,
+  `/manutencoes`, `/usuarios`, `/dashboard`.
+
 ## Por que os dados ficam em arquivos separados
 
 - `api/src/functions/*.js` contém apenas a lógica (rota, agregações);
