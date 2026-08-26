@@ -15,14 +15,41 @@ https://github.com/FabioVisentainer/ativos-ti-pjbl
 
 `<< PREENCHER APÓS O DEPLOY >>`
 
-## Azure Function (mock)
+## Azure Function (mock backend)
 
-A Azure Function (`/api`) fica integrada ao Static Web App (mesma URL do
-site, em `/api/*`) — ver detalhes no [`README.md`](./README.md).
+A Azure Function fica integrada ao Static Web App, publicada sob `/api` na
+mesma URL do site (ex.: `https://<site>.azurestaticapps.net/api/...`).
+Endpoints disponíveis, todos **GET**:
+
+| Rota | Descrição |
+| --- | --- |
+| `GET /api/dashboard` | Indicadores gerenciais consolidados (total de ativos, em uso/estoque/manutenção/baixados, custo de manutenção acumulado, ativos por setor, custo de manutenção por mês, últimas movimentações) |
+| `GET /api/ativos` | Lista de ativos de TI |
+| `GET /api/colaboradores` | Colaboradores, com contagem de ativos alocados |
+| `GET /api/alocacoes` | Alocações ativas |
+| `GET /api/manutencoes` | Histórico de manutenções |
+| `GET /api/usuarios` | Usuários do sistema e perfis |
+
+Código-fonte de cada rota em `api/src/functions/`, dados mock isolados em
+`api/src/data/` (ver [`README.md`](./README.md) para detalhes de stack e
+estrutura do repositório).
 
 ## Mock com Apidog
 
-Os endpoints também estão publicados como mock no Apidog (ver
-[`docs/apidog-import.md`](./docs/apidog-import.md)):
+Os mesmos 6 endpoints também estão publicados como mock no Apidog (com
+"Exemplo de Resposta Primeiro" como prioridade, garantindo que os dados
+reais do projeto sejam retornados em vez de dados aleatórios):
 
-`https://mock.apidog.com/m1/1367360-1371779-default`
+- **URL base:** `https://mock.apidog.com/m1/1367360-1371779-default`
+
+| Rota completa | Equivalente na Azure Function |
+| --- | --- |
+| `https://mock.apidog.com/m1/1367360-1371779-default/ativos` | `GET /api/ativos` |
+| `https://mock.apidog.com/m1/1367360-1371779-default/colaboradores` | `GET /api/colaboradores` |
+| `https://mock.apidog.com/m1/1367360-1371779-default/alocacoes` | `GET /api/alocacoes` |
+| `https://mock.apidog.com/m1/1367360-1371779-default/manutencoes` | `GET /api/manutencoes` |
+| `https://mock.apidog.com/m1/1367360-1371779-default/usuarios` | `GET /api/usuarios` |
+| `https://mock.apidog.com/m1/1367360-1371779-default/dashboard` | `GET /api/dashboard` |
+
+Passo a passo de como os mocks foram configurados no Apidog:
+[`docs/apidog-import.md`](./docs/apidog-import.md).
