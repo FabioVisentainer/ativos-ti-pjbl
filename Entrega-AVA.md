@@ -13,7 +13,7 @@ https://github.com/FabioVisentainer/ativos-ti-pjbl
 
 ## Link do site (Azure Static Web Apps)
 
-`<< PREENCHER APÓS O DEPLOY >>`
+https://green-desert-01af5d50f.7.azurestaticapps.net
 
 ## Azure Function (mock backend)
 

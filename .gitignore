@@ -16,8 +16,8 @@ api/obj/
 
 # variáveis de ambiente locais
 .env
-.env.local
-.env*.local
+frontend/.env.local
+frontend/.env.local
 
 # Azure Static Web Apps CLI
 .swa/
