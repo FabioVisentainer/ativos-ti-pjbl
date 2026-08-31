@@ -2,12 +2,14 @@
   "name": "ativos-ti-api",
   "version": "1.0.0",
   "private": true,
-  "description": "Azure Functions (mock) para o Sistema de Controle de Ativos de Informática — projeto PJBL",
+  "description": "Azure Functions para o Sistema de Controle de Ativos de Informática — projeto PJBL",
   "main": "src/functions/*.js",
   "scripts": {
-    "start": "func start"
+    "start": "func start",
+    "seed": "node scripts/seed-mongo.js"
   },
   "dependencies": {
-    "@azure/functions": "^4.5.0"
+    "@azure/functions": "^4.5.0",
+    "mongodb": "^7.6.0"
   }
 }

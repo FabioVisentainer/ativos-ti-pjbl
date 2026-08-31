@@ -1,17 +1,19 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Package, ScanLine, Plus } from "lucide-react";
-import { getAtivos } from "@/lib/api";
-import type { Ativo, StatusAtivo } from "@/lib/types";
+import { getAtivos, inserirAtivo, alterarAtivo, excluirAtivo } from "@/lib/api";
+import type { Ativo, NovoAtivo, StatusAtivo } from "@/lib/types";
 import PageHeader from "@/components/common/PageHeader";
 import InfoBanner from "@/components/common/InfoBanner";
+import ConfirmDialog from "@/components/common/ConfirmDialog";
 import { Loading, ErrorMsg } from "@/components/common/DataState";
 import Card from "@/components/ui/Card";
 import Button from "@/components/ui/Button";
 import Pagination from "@/components/ui/Pagination";
 import AtivosFilters from "@/components/ativos/AtivosFilters";
 import AtivosTable from "@/components/ativos/AtivosTable";
+import AtivoFormModal from "@/components/ativos/AtivoFormModal";
 
 const POR_PAGINA = 8;
 
@@ -22,16 +24,58 @@ export default function AtivosPage() {
   const [busca, setBusca] = useState("");
   const [pagina, setPagina] = useState(1);
 
-  useEffect(() => {
-    getAtivos()
+  const [modal, setModal] = useState<{ aberto: boolean; ativo: Ativo | null }>({
+    aberto: false,
+    ativo: null,
+  });
+  const [paraExcluir, setParaExcluir] = useState<Ativo | null>(null);
+  const [excluindo, setExcluindo] = useState(false);
+  const [acaoErro, setAcaoErro] = useState<string | null>(null);
+
+  const carregarAtivos = useCallback(() => {
+    return getAtivos()
       .then(setAtivos)
       .catch((err: Error) => setError(err.message));
+  }, []);
+
+  useEffect(() => {
+    carregarAtivos();
 
     // Preenche a busca a partir do modal "Ler código" (?busca=PAT-000X).
     const params = new URLSearchParams(window.location.search);
     const codigo = params.get("busca");
     if (codigo) setBusca(codigo);
-  }, []);
+  }, [carregarAtivos]);
+
+  async function salvarAtivo(valores: NovoAtivo) {
+    if (modal.ativo) {
+      await alterarAtivo(modal.ativo.numeroPatrimonio, valores);
+    } else {
+      await inserirAtivo(valores);
+    }
+    setModal({ aberto: false, ativo: null });
+    // Foca a busca no ativo salvo, pra ele aparecer na tela mesmo se cair
+    // numa página diferente da paginação (ex.: um ativo recém-criado).
+    setBusca(valores.numeroPatrimonio);
+    setFiltro("Todos");
+    setPagina(1);
+    await carregarAtivos();
+  }
+
+  async function confirmarExclusao() {
+    if (!paraExcluir) return;
+    setExcluindo(true);
+    setAcaoErro(null);
+    try {
+      await excluirAtivo(paraExcluir.numeroPatrimonio);
+      setParaExcluir(null);
+      await carregarAtivos();
+    } catch (err) {
+      setAcaoErro(err instanceof Error ? err.message : "Não foi possível excluir o ativo.");
+    } finally {
+      setExcluindo(false);
+    }
+  }
 
   const filtrados = useMemo(() => {
     if (!ativos) return [];
@@ -68,7 +112,12 @@ export default function AtivosPage() {
             <Button variant="secondary" icon={<ScanLine size={15} />}>
               Consultar por código
             </Button>
-            <Button icon={<Plus size={15} />}>Novo Ativo</Button>
+            <Button
+              icon={<Plus size={15} />}
+              onClick={() => setModal({ aberto: true, ativo: null })}
+            >
+              Novo Ativo
+            </Button>
           </>
         }
       />
@@ -78,6 +127,8 @@ export default function AtivosPage() {
         pelo sistema: um ativo alocado não pode receber baixa, e um ativo em
         manutenção não pode ser alocado.
       </InfoBanner>
+
+      {acaoErro && <ErrorMsg message={acaoErro} />}
 
       <Card padded={false}>
         <AtivosFilters
@@ -93,7 +144,14 @@ export default function AtivosPage() {
           }}
         />
 
-        <AtivosTable itens={visiveis} />
+        <AtivosTable
+          itens={visiveis}
+          onEditar={(ativo) => setModal({ aberto: true, ativo })}
+          onExcluir={(ativo) => {
+            setAcaoErro(null);
+            setParaExcluir(ativo);
+          }}
+        />
 
         <Pagination
           pagina={paginaAtual}
@@ -102,6 +160,30 @@ export default function AtivosPage() {
           onChange={setPagina}
         />
       </Card>
+
+      <AtivoFormModal
+        // Remonta a cada abertura (nova ou de um ativo diferente) pra nunca
+        // herdar estado de salvamento/erro de uma edição anterior.
+        key={modal.aberto ? modal.ativo?.numeroPatrimonio ?? "novo-ativo" : "fechado"}
+        open={modal.aberto}
+        ativo={modal.ativo}
+        onClose={() => setModal({ aberto: false, ativo: null })}
+        onSubmit={salvarAtivo}
+      />
+
+      <ConfirmDialog
+        open={paraExcluir !== null}
+        title="Excluir ativo"
+        description={
+          paraExcluir
+            ? `Tem certeza que deseja excluir o ativo ${paraExcluir.numeroPatrimonio} (${paraExcluir.tipo})? Essa ação não pode ser desfeita.`
+            : ""
+        }
+        confirmLabel="Excluir"
+        loading={excluindo}
+        onConfirm={confirmarExclusao}
+        onCancel={() => setParaExcluir(null)}
+      />
     </div>
   );
 }

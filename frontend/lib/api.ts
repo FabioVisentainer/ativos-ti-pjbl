@@ -15,6 +15,8 @@
 // Passo a passo completo em docs/apidog-import.md.
 import type {
   Ativo,
+  AtivoEditavel,
+  NovoAtivo,
   Colaborador,
   Alocacao,
   Manutencao,
@@ -24,6 +26,16 @@ import type {
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "/api";
 
+async function parseErro(response: Response): Promise<string> {
+  try {
+    const corpo = await response.json();
+    if (corpo && typeof corpo.error === "string") return corpo.error;
+  } catch {
+    // resposta sem corpo JSON — usa a mensagem padrão abaixo
+  }
+  return `${response.status} ${response.statusText}`;
+}
+
 async function get<T>(path: string): Promise<T> {
   const response = await fetch(`${API_BASE_URL}${path}`, {
     method: "GET",
@@ -31,9 +43,26 @@ async function get<T>(path: string): Promise<T> {
   });
 
   if (!response.ok) {
-    throw new Error(
-      `Falha ao consultar ${path}: ${response.status} ${response.statusText}`
-    );
+    throw new Error(`Falha ao consultar ${path}: ${await parseErro(response)}`);
+  }
+
+  return response.json() as Promise<T>;
+}
+
+/** POST/PUT/DELETE com corpo JSON opcional — usado pelas mutações de Ativos. */
+async function send<T>(
+  method: "POST" | "PUT" | "DELETE",
+  path: string,
+  body?: unknown
+): Promise<T> {
+  const response = await fetch(`${API_BASE_URL}${path}`, {
+    method,
+    headers: { Accept: "application/json", "Content-Type": "application/json" },
+    body: body !== undefined ? JSON.stringify(body) : undefined,
+  });
+
+  if (!response.ok) {
+    throw new Error(`Falha ao ${method} ${path}: ${await parseErro(response)}`);
   }
 
   return response.json() as Promise<T>;
@@ -44,9 +73,36 @@ export function getDashboard(): Promise<DashboardData> {
   return get<DashboardData>("/dashboard");
 }
 
-/** GET /api/ativos — lista de ativos de TI cadastrados (RF13/RF17). */
+/** GET /api/ativos — pesquisa ativos de TI cadastrados no MongoDB (RF13/RF17). */
 export function getAtivos(): Promise<Ativo[]> {
   return get<Ativo[]>("/ativos");
+}
+
+/** POST /api/ativos — insere um novo ativo no MongoDB (RF13). */
+export function inserirAtivo(novoAtivo: NovoAtivo): Promise<Ativo> {
+  return send<Ativo>("POST", "/ativos", novoAtivo);
+}
+
+/** PUT /api/ativos/{numeroPatrimonio} — altera um ativo existente no MongoDB (RF13). */
+export function alterarAtivo(
+  numeroPatrimonio: string,
+  alteracoes: AtivoEditavel
+): Promise<Ativo> {
+  return send<Ativo>(
+    "PUT",
+    `/ativos/${encodeURIComponent(numeroPatrimonio)}`,
+    alteracoes
+  );
+}
+
+/** DELETE /api/ativos/{numeroPatrimonio} — exclui um ativo do MongoDB (RF13). */
+export function excluirAtivo(
+  numeroPatrimonio: string
+): Promise<{ mensagem: string }> {
+  return send<{ mensagem: string }>(
+    "DELETE",
+    `/ativos/${encodeURIComponent(numeroPatrimonio)}`
+  );
 }
 
 /** GET /api/colaboradores — colaboradores cadastrados (RF09/RF12). */

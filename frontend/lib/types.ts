@@ -17,6 +17,12 @@ export interface Ativo {
   valorAquisicao: number;
 }
 
+/** Payload para POST /api/ativos — o "id" é atribuído pelo backend. */
+export type NovoAtivo = Omit<Ativo, "id">;
+
+/** Payload para PUT /api/ativos/{numeroPatrimonio} — patrimônio e id não são editáveis por aqui. */
+export type AtivoEditavel = Partial<Omit<Ativo, "id" | "numeroPatrimonio">>;
+
 export interface Colaborador {
   id: number;
   nome: string;

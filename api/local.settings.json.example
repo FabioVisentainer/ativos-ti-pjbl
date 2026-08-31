@@ -2,7 +2,9 @@
   "IsEncrypted": false,
   "Values": {
     "AzureWebJobsStorage": "",
-    "FUNCTIONS_WORKER_RUNTIME": "node"
+    "FUNCTIONS_WORKER_RUNTIME": "node",
+    "MONGO_URI": "mongodb+srv://<usuario>:<senha>@<cluster>.mongodb.net/?appName=Cluster0",
+    "MONGO_DB_NAME": "ativos_ti"
   },
   "Host": {
     "CORS": "*"
