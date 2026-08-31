@@ -69,6 +69,38 @@ existentes do projeto:
    ficaram curtas, compondo esses componentes em vez de conter JSX extenso
    inline.
 
+7. **Entrega complementar — MongoDB Atlas e as 4 Azure Functions de CRUD**
+   — o enunciado da segunda etapa do PJBL colado diretamente na conversa:
+
+   > "Criar uma conta de estudante para o banco de dados MongoDB em MongoDB
+   > Student Pack. Crie um banco de dados no MongoDB Atlas. Criar 4 Azure
+   > Functions para a aplicação PJBL. Function que realize inserir, alterar,
+   > excluir e pesquisar. [...] O FrontEnd criado anteriormente deve
+   > executar as 4 Azure Functions. Entregar evidência da criação do banco
+   > de dados MongoDB. Entregar evidência da criação das 4 Azure Functions.
+   > Entregar evidência do frontend executando as 4 Azure Functions.
+   > Informar no documento o nome dos alunos que realizaram a atividade."
+
+   A partir disso, a entidade **Ativos** deixou de usar dados mock e passou
+   a ser 100% real, persistida num banco MongoDB Atlas:
+   - conexão compartilhada com o MongoDB em `api/src/lib/mongo.js`
+     (`MongoClient` com pool de conexão reaproveitado entre invocações da
+     Function, boa prática de performance no Azure Functions);
+   - 4 Azure Functions novas: `ativos.js` (pesquisar, `GET /api/ativos`,
+     agora aceitando `?busca=` e `?status=`), `ativosInserir.js` (`POST`),
+     `ativosAlterar.js` (`PUT /api/ativos/{numeroPatrimonio}`) e
+     `ativosExcluir.js` (`DELETE /api/ativos/{numeroPatrimonio}`);
+   - script de carga inicial `api/scripts/seed-mongo.js`, que popula a
+     collection `ativos` a partir do mock JSON já existente;
+   - o frontend (`app/ativos/page.tsx`, `components/ativos/AtivoFormModal.tsx`,
+     `components/common/ConfirmDialog.tsx`, `lib/api.ts`) foi ligado às 4
+     Functions de verdade: a tela de Ativos agora cria, edita e exclui
+     ativos de fato, além de pesquisar — sem nenhum dado mock nessa tela;
+   - tudo verificado com testes automatizados antes de considerar pronto:
+     testes unitários das 4 Functions (com um MongoDB simulado em memória)
+     e um teste de ponta a ponta no navegador (Playwright) cobrindo
+     pesquisar, inserir, alterar e excluir um ativo pela interface real.
+
 ## O que foi gerado pela IA
 
 - Frontend completo em `frontend/` (Next.js 16 + App Router + TypeScript +
@@ -93,13 +125,16 @@ existentes do projeto:
   - Primitivos de UI reutilizáveis em `components/ui/` (Button, Card,
     Badge, Input, Select, Table, Pagination) e tipos compartilhados em
     `lib/types.ts`.
-- Mock backend em Azure Functions (`api/`), com seis endpoints GET
-  (`/dashboard`, `/ativos`, `/colaboradores`, `/alocacoes`,
-  `/manutencoes`, `/usuarios`), dados isolados em `api/src/data/*.json`.
+- Backend em Azure Functions (`api/`): cinco endpoints GET de dados mock
+  (`/dashboard`, `/colaboradores`, `/alocacoes`, `/manutencoes`,
+  `/usuarios`), dados isolados em `api/src/data/*.json`; e 4 Functions de
+  CRUD real para `/ativos` (pesquisar, inserir, alterar, excluir),
+  persistidas num banco MongoDB Atlas via `api/src/lib/mongo.js`.
 - Workflow de deploy para o Azure Static Web Apps
   (`.github/workflows/azure-static-web-apps.yml`).
-- Documentação: `GRUPO.md`, `README.md`, `docs/apidog-import.md` e este
-  `Prompt.md`.
+- Documentação: `GRUPO.md`, `README.md`, `docs/apidog-import.md`, este
+  `Prompt.md`, e os tutoriais de deploy no Azure e de configuração do
+  MongoDB Atlas + as 4 Functions.
 
 Todo o código gerado foi revisado, testado localmente (build do Next.js,
 execução dos endpoints mock e navegação por todas as telas com testes

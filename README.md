@@ -5,10 +5,12 @@ Azure Functions (mock) para gerenciar o parque de ativos de TI de uma
 empresa (notebooks, monitores, periféricos etc.). Projeto desenvolvido para
 a disciplina de PJBL, replicando o protótipo funcional do sistema.
 
-- **Site publicado (Azure Static Web Apps):** `<< PREENCHER APÓS O DEPLOY >>`
+- **Site publicado (Azure Static Web Apps):** https://green-desert-01af5d50f.7.azurestaticapps.net
 - **Grupo:** ver [`GRUPO.md`](./GRUPO.md)
 - **Prompt de IA utilizado para gerar o frontend:** ver [`Prompt.md`](./Prompt.md)
 - **Como importar os mocks no Apidog:** ver [`docs/apidog-import.md`](./docs/apidog-import.md)
+- **Tutorial — deploy no Azure Static Web Apps:** https://claude.ai/code/artifact/2569a598-d524-4734-9045-0979df5d6f67
+- **Tutorial — MongoDB Atlas + as 4 Azure Functions de CRUD:** https://claude.ai/code/artifact/212864a6-93e0-4b02-b3f2-f67ae3bd9875
 
 ## Funcionalidades / telas
 
@@ -44,22 +46,40 @@ implementada aqui porque exige teste em dispositivo real com HTTPS.
   Azure Static Web Apps. Ícones via `lucide-react`. Tipos compartilhados em
   `frontend/lib/types.ts` (`Ativo`, `Colaborador`, `Alocacao`, `Manutencao`,
   `Usuario`, `DashboardData`).
-- **Backend (mock):** Azure Functions (Node.js, modelo de programação v4),
-  com seis endpoints GET. Os dados mock ficam isolados em arquivos JSON
-  (`api/src/data/`), separados da lógica — ver
-  [`docs/apidog-import.md`](./docs/apidog-import.md) para usar o Apidog no
-  lugar da Function local, sem alterar código.
+- **Backend:** Azure Functions (Node.js, modelo de programação v4). Cinco
+  rotas (`/dashboard`, `/colaboradores`, `/alocacoes`, `/manutencoes`,
+  `/usuarios`) continuam servindo dados mock isolados em arquivos JSON
+  (`api/src/data/`) — ver [`docs/apidog-import.md`](./docs/apidog-import.md)
+  para usar o Apidog no lugar da Function local, sem alterar código. A
+  entidade **Ativos** já é 100% real: as 4 Functions de CRUD
+  (pesquisar/inserir/alterar/excluir) leem e gravam num banco **MongoDB
+  Atlas**, via `api/src/lib/mongo.js` — ver o tutorial de configuração
+  linkado no topo deste README.
 
-## Endpoints GET disponíveis
+## Endpoints disponíveis
+
+Mock (dados em JSON, apenas leitura):
 
 | Rota                 | Descrição                                              |
 | --------------------- | ------------------------------------------------------- |
 | `GET /api/dashboard`  | Indicadores consolidados (calculado a partir dos outros) |
-| `GET /api/ativos`     | Lista de ativos de TI                                   |
 | `GET /api/colaboradores` | Colaboradores + contagem de ativos alocados          |
 | `GET /api/alocacoes`  | Alocações ativas                                        |
 | `GET /api/manutencoes`| Histórico de manutenções                                |
 | `GET /api/usuarios`   | Usuários do sistema e perfis                            |
+
+Ativos (CRUD real, persistido no MongoDB Atlas):
+
+| Rota                              | Descrição                                    |
+| ---------------------------------- | ---------------------------------------------- |
+| `GET /api/ativos`                  | Pesquisar ativos (aceita `?busca=` e `?status=`) |
+| `POST /api/ativos`                 | Inserir um novo ativo                         |
+| `PUT /api/ativos/{numeroPatrimonio}`  | Alterar campos de um ativo existente       |
+| `DELETE /api/ativos/{numeroPatrimonio}` | Excluir um ativo                         |
+
+Código-fonte de cada rota em `api/src/functions/` (`ativos.js`,
+`ativosInserir.js`, `ativosAlterar.js`, `ativosExcluir.js`) e a conexão
+compartilhada com o MongoDB em `api/src/lib/mongo.js`.
 
 ## Estrutura do repositório
 
@@ -105,13 +125,23 @@ esses componentes.
   (`npm install -g azure-functions-core-tools@4 --unsafe-perm true`) — apenas
   se for rodar a Azure Function localmente.
 
-### 1. Backend (Azure Function mock)
+### 1. Backend (Azure Functions)
 
 ```bash
 cd api
 npm install
 cp local.settings.json.example local.settings.json
 npm start        # inicia em http://localhost:7071
+```
+
+As rotas de **Ativos** (pesquisar/inserir/alterar/excluir) precisam de um
+banco MongoDB Atlas configurado — preencha `MONGO_URI` e `MONGO_DB_NAME` em
+`api/local.settings.json` (ver o tutorial completo linkado no topo deste
+README). Com a `MONGO_URI` configurada, popule o banco uma única vez com os
+dados de exemplo:
+
+```bash
+npm run seed      # roda api/scripts/seed-mongo.js
 ```
 
 ### 2. Frontend
@@ -154,6 +184,11 @@ NEXT_PUBLIC_API_BASE_URL=http://localhost:7071/api
    `https://<nome-gerado>.azurestaticapps.net`) e atualize:
    - o topo deste `README.md`;
    - a entrega no AVA, junto com o link do repositório do GitHub.
+5. Nas configurações do recurso Static Web App, em **Configuration →
+   Environment variables**, adicione `MONGO_URI` e `MONGO_DB_NAME` (ambiente
+   Production) para que as 4 Functions de Ativos consigam se conectar ao
+   MongoDB Atlas em produção — passo a passo completo no tutorial de MongoDB
+   linkado no topo deste README.
 
 ## Mock com Apidog
 
