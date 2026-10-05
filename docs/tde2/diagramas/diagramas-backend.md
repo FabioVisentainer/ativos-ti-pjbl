@@ -271,40 +271,42 @@ Fluxo Frontend → Proxy → API Gateway → Backend → MySQL. Dentro do backen
 
 ```mermaid
 flowchart TB
-    FE["Frontend<br/>Next.js<br/>(proxy: rewrites /api/*)"]
-    GW["API Gateway<br/>Spring Cloud Gateway :8080<br/>rota Path=/api/** · CORS"]
+    FE["Frontend Next.js — proxy: rewrites /api/*"]
+    GW["API Gateway — Spring Cloud Gateway :8080 — Path=/api/** · CORS"]
 
-    subgraph BE["Backend — Kotlin / Spring Boot :8081"]
+    subgraph BE["Backend Kotlin / Spring Boot :8081"]
         direction TB
         subgraph PRES["Apresentação"]
-            CTRL["Controllers<br/>ativo · colaborador · usuario<br/>manutencao · alocacao<br/>movimentacao · dashboard"]
+            direction LR
+            CTRL["Controllers<br/>(7 módulos)"]
             EXH["ApiExceptionHandler<br/>(erros → HTTP)"]
+            EXH -.-> CTRL
         end
         subgraph APP["Aplicação (casos de uso)"]
+            direction LR
             SVC["Services<br/>@Transactional"]
-            PORT["Portas de leitura<br/>AtivoConsulta · ColaboradorConsulta<br/>ManutencaoConsulta · MovimentacaoConsulta"]
-        end
-        subgraph DOM["Domínio"]
-            ENT["Entities + Enums<br/>invariantes do negócio"]
+            PORT["Portas *Consulta<br/>(interfaces)"]
+            SVC --> PORT
         end
         subgraph INFRA["Infraestrutura"]
-            REPO["Repositories<br/>Spring Data JPA (interfaces)"]
+            direction LR
+            REPO["Repositories<br/>Spring Data JPA<br/>persistem as Entities"]
             FLY["Flyway<br/>V1 schema · V2 dados"]
+        end
+        subgraph DOM["Domínio"]
+            direction LR
+            ENT["Entities + Enums<br/>regras e invariantes do negócio"]
         end
     end
 
     DB[("MySQL 8.4")]
 
-    FE -->|HTTP /api/*| GW
-    GW -->|HTTP| CTRL
-    CTRL --> SVC
-    EXH -.->|traduz exceções| CTRL
-    SVC --> PORT
-    SVC --> REPO
-    SVC --> ENT
-    REPO --> ENT
-    REPO -->|JDBC| DB
-    FLY -->|migra| DB
+    FE -->|HTTP| GW
+    GW -->|HTTP| PRES
+    PRES -->|chama| APP
+    APP -->|usa abstração| INFRA
+    APP -->|usa| DOM
+    INFRA -->|JDBC| DB
 ```
 
 </details>
