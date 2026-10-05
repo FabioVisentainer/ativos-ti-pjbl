@@ -27,3 +27,9 @@ frontend/.env.local
 *.log
 npm-debug.log*
 .vscode/
+
+# Gradle / Kotlin (backend e gateway)
+.gradle/
+**/build/
+!gradle/wrapper/gradle-wrapper.jar
+*.class
