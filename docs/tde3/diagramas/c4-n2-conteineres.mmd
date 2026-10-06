@@ -1,0 +1,18 @@
+flowchart TB
+    U["<b>Usuário</b><br/>[Pessoa]<br/>Navegador web"]
+    subgraph SIS["Sistema de Controle de Ativos de Informática"]
+        FE["<b>Frontend</b><br/>[Next.js / React]<br/>7 telas + login mock.<br/>Proxy reverso de /api/*"]
+        GW["<b>API Gateway</b><br/>[Spring Cloud Gateway]<br/>Rota /api/**, CORS.<br/>Porta 8080"]
+        BE["<b>Backend</b><br/>[Kotlin / Spring Boot 4]<br/>API REST em módulos<br/>(Vertical Slice).<br/>Porta 8081"]
+        DB[("<b>MySQL 8.4</b><br/>[Banco relacional]<br/>6 tabelas,<br/>migrations Flyway")]
+    end
+    U -->|"HTTPS"| FE
+    FE -->|"HTTP + JSON"| GW
+    GW -->|"HTTP + JSON"| BE
+    BE -->|"JDBC / JPA"| DB
+    classDef pessoa fill:#08427b,color:#fff,stroke:#052e56
+    classDef cont fill:#1168bd,color:#fff,stroke:#0b4884
+    classDef bd fill:#2e7d32,color:#fff,stroke:#1b5e20
+    class U pessoa
+    class FE,GW,BE cont
+    class DB bd

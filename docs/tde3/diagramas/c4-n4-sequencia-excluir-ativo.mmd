@@ -1,0 +1,32 @@
+sequenceDiagram
+    autonumber
+    actor T as Técnico
+    participant FE as Frontend Next.js
+    participant GW as API Gateway
+    participant AC as AtivoController
+    participant AS as AtivoService
+    participant AR as AtivoRepository
+    participant EH as ApiExceptionHandler
+    participant DB as MySQL
+    T->>FE: Exclui o patrimônio
+    FE->>GW: DELETE /api/ativos/{patrimonio}
+    GW->>AC: DELETE /api/ativos/{patrimonio}
+    AC->>AS: excluir(patrimonio)
+    AS->>AR: buscarPorNumeroPatrimonio()
+    AR->>DB: SELECT
+    alt não encontrado
+        AS-->>EH: RecursoNaoEncontradoException
+        EH-->>FE: 404 {error}
+    else encontrado
+        AS->>AR: delete(ativo) e flush()
+        AR->>DB: DELETE ativo
+        alt tem vínculos (FK)
+            DB-->>AR: violação de integridade
+            AS-->>EH: ConflitoException
+            EH-->>FE: 409 {error}
+        else sem vínculos
+            DB-->>AR: ok
+            AS-->>AC: MensagemResponse
+            AC-->>FE: 200 {mensagem}
+        end
+    end

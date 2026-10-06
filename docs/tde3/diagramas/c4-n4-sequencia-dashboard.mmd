@@ -1,0 +1,28 @@
+sequenceDiagram
+    autonumber
+    actor G as Gestor
+    participant FE as Frontend Next.js
+    participant GW as API Gateway
+    participant DC as DashboardController
+    participant DS as DashboardService
+    participant AC as AtivoService
+    participant MC as ManutencaoService
+    participant VC as MovimentacaoService
+    participant DB as MySQL
+    G->>FE: Abre o Dashboard
+    FE->>GW: GET /api/dashboard
+    GW->>DC: GET /api/dashboard
+    DC->>DS: obter()
+    DS->>AC: contarPorStatus()
+    AC->>DB: COUNT GROUP BY status
+    DB-->>AC: totais
+    DS->>AC: contarPorSetor()
+    AC->>DB: COUNT GROUP BY setor
+    DS->>MC: custoAcumulado() e custoPorMes()
+    MC->>DB: SELECT manutenções
+    DS->>VC: ultimas()
+    VC->>DB: SELECT 10 mais recentes
+    DS-->>DC: DashboardResponse
+    DC-->>GW: 200 OK + JSON
+    GW-->>FE: 200 OK + JSON
+    FE-->>G: Cards e gráficos

@@ -1,0 +1,33 @@
+sequenceDiagram
+    autonumber
+    actor T as Técnico
+    participant FE as Frontend Next.js
+    participant GW as API Gateway
+    participant AC as AtivoController
+    participant AS as AtivoService
+    participant CC as ColaboradorConsulta
+    participant AR as AtivoRepository
+    participant DB as MySQL
+    T->>FE: Preenche e confirma
+    FE->>GW: POST /api/ativos
+    GW->>AC: POST /api/ativos
+    AC->>AS: criar(NovoAtivoRequest)
+    opt colaborador informado
+        AS->>CC: exigirPorNome(nome)
+        CC-->>AS: Colaborador (400 se não existe)
+    end
+    AS->>AR: existsByNumeroPatrimonio()
+    AR->>DB: SELECT
+    DB-->>AR: existe?
+    alt patrimônio já cadastrado
+        AS-->>AC: ConflitoException
+        AC-->>FE: 409 {error}
+    else novo patrimônio
+        AS->>AR: save(Ativo)
+        AR->>DB: INSERT ativo
+        DB-->>AR: id gerado
+        AS-->>AC: AtivoResponse
+        AC-->>GW: 201 Created + JSON
+        GW-->>FE: 201 Created + JSON
+        FE-->>T: Ativo na lista
+    end
