@@ -1,0 +1,16 @@
+flowchart TB
+    U1["<b>Colaborador</b><br/>[Pessoa]<br/>Consulta os ativos sob sua responsabilidade"]
+    U2["<b>Técnico de TI</b><br/>[Pessoa]<br/>Cadastra, altera e dá baixa em ativos"]
+    U3["<b>Gestor de TI</b><br/>[Pessoa]<br/>Acompanha indicadores e custos"]
+    SYS["<b>Sistema de Controle de Ativos de Informática</b><br/>[Sistema de software]<br/>Gerencia o parque de ativos, alocações,<br/>manutenções e movimentações"]
+    SSO["<b>Microsoft Entra ID</b><br/>[Sistema externo - SSO]<br/>Login corporativo (simulado no protótipo)"]
+    U1 -->|"Usa (HTTPS)"| SYS
+    U2 -->|"Usa (HTTPS)"| SYS
+    U3 -->|"Usa (HTTPS)"| SYS
+    SYS -.->|"Autenticação (somente mock hoje)"| SSO
+    classDef pessoa fill:#08427b,color:#fff,stroke:#052e56
+    classDef sistema fill:#1168bd,color:#fff,stroke:#0b4884
+    classDef externo fill:#999,color:#fff,stroke:#6b6b6b
+    class U1,U2,U3 pessoa
+    class SYS sistema
+    class SSO externo

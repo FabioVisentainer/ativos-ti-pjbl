@@ -1,0 +1,10 @@
+flowchart LR
+    NAV["Navegador"]
+    subgraph AZ["Microsoft Azure (protótipo original — pasta api/)"]
+        SWA["Azure Static Web Apps<br/>Frontend Next.js exportado<br/>(HTML/CSS/JS estático)"]
+        FN["Azure Functions (Node.js)<br/>CRUD de ativos e demais rotas /api"]
+    end
+    MG[("MongoDB Atlas")]
+    NAV -->|HTTPS| SWA
+    SWA -->|"HTTPS /api/*"| FN
+    FN -->|"driver MongoDB"| MG

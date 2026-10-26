@@ -1,0 +1,36 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: ativos-gateway
+  cloud:
+    gateway:
+      server:
+        webflux:
+          default-filters:
+            - AddResponseHeader=X-Served-By, ativos-gateway
+          globalcors:
+            cors-configurations:
+              '[/**]':
+                allowedOrigins: ${CORS_ALLOWED_ORIGINS:http://localhost:3000}
+                allowedMethods:
+                  - GET
+                  - POST
+                  - PUT
+                  - DELETE
+                  - OPTIONS
+                allowedHeaders: "*"
+                maxAge: 3600
+          routes:
+            # Todas as chamadas /api/** do frontend seguem para o backend (Kotlin/Spring Boot).
+            - id: backend-api
+              uri: ${BACKEND_URL:http://localhost:8081}
+              predicates:
+                - Path=/api/**
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,gateway

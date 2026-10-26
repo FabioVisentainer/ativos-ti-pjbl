@@ -1,0 +1,48 @@
+flowchart TB
+    subgraph DASH["módulo dashboard"]
+        D_C["DashboardController"] --> D_S["DashboardService"]
+    end
+
+    subgraph ATIVO["módulo ativo"]
+        A_C["AtivoController"] --> A_S["AtivoService"]
+        A_S --> A_R["AtivoRepository"] --> A_E["Ativo"]
+        A_P(["AtivoConsulta"])
+        A_S -.implementa.-> A_P
+    end
+
+    subgraph COL["módulo colaborador"]
+        C_C["ColaboradorController"] --> C_S["ColaboradorService"]
+        C_S --> C_R["ColaboradorRepository"] --> C_E["Colaborador"]
+        C_P(["ColaboradorConsulta"])
+        C_S -.implementa.-> C_P
+    end
+
+    subgraph MAN["módulo manutencao"]
+        M_C["ManutencaoController"] --> M_S["ManutencaoService"]
+        M_S --> M_R["ManutencaoRepository"] --> M_E["Manutencao"]
+        M_P(["ManutencaoConsulta"])
+        M_S -.implementa.-> M_P
+    end
+
+    subgraph MOV["módulo movimentacao"]
+        V_C["MovimentacaoController"] --> V_S["MovimentacaoService"]
+        V_S --> V_R["MovimentacaoRepository"] --> V_E["Movimentacao"]
+        V_P(["MovimentacaoConsulta"])
+        V_S -.implementa.-> V_P
+    end
+
+    subgraph ALO["módulo alocacao"]
+        L_C["AlocacaoController"] --> L_S["AlocacaoService"]
+        L_S --> L_R["AlocacaoRepository"] --> L_E["Alocacao"]
+    end
+
+    subgraph USU["módulo usuario"]
+        U_C["UsuarioController"] --> U_S["UsuarioService"]
+        U_S --> U_R["UsuarioRepository"] --> U_E["Usuario"]
+    end
+
+    %% Entre módulos: SOMENTE pelas portas *Consulta (DIP)
+    A_S -->|usa| C_P
+    D_S -->|usa| A_P
+    D_S -->|usa| M_P
+    D_S -->|usa| V_P

@@ -1,0 +1,116 @@
+classDiagram
+    direction LR
+
+    class AtivoController {
+        <<Controller>>
+        -service: AtivoService
+        +pesquisar(busca, status) List~AtivoResponse~
+        +inserir(request) AtivoResponse
+        +alterar(numeroPatrimonio, campos) AtivoResponse
+        +excluir(numeroPatrimonio) MensagemResponse
+    }
+
+    class AtivoService {
+        <<Service>>
+        -repository: AtivoRepository
+        -colaboradores: ColaboradorConsulta
+        +pesquisar(busca, status) List~AtivoResponse~
+        +criar(request) AtivoResponse
+        +alterar(numeroPatrimonio, campos) AtivoResponse
+        +excluir(numeroPatrimonio) MensagemResponse
+        +contarPorStatus() Map
+        +contarPorSetor() List~AtivoPorSetor~
+    }
+
+    class AtivoConsulta {
+        <<interface>>
+        +contarPorStatus() Map
+        +contarPorSetor() List~AtivoPorSetor~
+    }
+
+    class ColaboradorConsulta {
+        <<interface>>
+        +exigirPorNome(nome) Colaborador
+    }
+
+    class AtivoRepository {
+        <<interface>>
+        +existsByNumeroPatrimonio(n) Boolean
+        +buscarPorNumeroPatrimonio(n) Ativo
+        +pesquisar(padrao, status) List~Ativo~
+        +totaisPorStatus() List~StatusTotal~
+        +totaisPorSetor() List~SetorTotal~
+    }
+
+    class JpaRepository {
+        <<interface>>
+        +save()
+        +delete()
+        +flush()
+    }
+
+    class Ativo {
+        <<Entity>>
+        +id: Long
+        +tipo: String
+        +marca: String
+        +modelo: String
+        +numeroPatrimonio: String
+        +numeroSerie: String
+        +status: StatusAtivo
+        +colaborador: Colaborador
+        +setor: String
+        +dataAquisicao: LocalDate
+        +valorAquisicao: BigDecimal
+        +equipamento() String
+    }
+
+    class StatusAtivo {
+        <<enumeration>>
+        EM_ESTOQUE
+        EM_USO
+        EM_MANUTENCAO
+        BAIXADO
+        +rotulo: String
+        +doRotulo(texto) StatusAtivo
+    }
+
+    class AtivoResponse {
+        <<DTO>>
+        +id +tipo +marca +modelo
+        +numeroPatrimonio +numeroSerie
+        +status +colaborador +setor
+        +dataAquisicao +valorAquisicao
+    }
+
+    class NovoAtivoRequest {
+        <<DTO>>
+        +tipo +marca +modelo
+        +numeroPatrimonio +numeroSerie
+        +status +colaborador +setor
+        +dataAquisicao +valorAquisicao
+    }
+
+    class MensagemResponse {
+        <<DTO>>
+        +mensagem: String
+    }
+
+    class AtivoPorSetor {
+        <<DTO>>
+        +setor: String
+        +quantidade: Long
+    }
+
+    AtivoController --> AtivoService : usa
+    AtivoController ..> NovoAtivoRequest : recebe
+    AtivoController ..> AtivoResponse : devolve
+    AtivoController ..> MensagemResponse : devolve
+    AtivoService ..|> AtivoConsulta : implementa
+    AtivoService --> AtivoRepository : depende da abstração
+    AtivoService --> ColaboradorConsulta : depende da abstração
+    AtivoService ..> Ativo : regras de negócio
+    AtivoService ..> AtivoPorSetor : devolve
+    AtivoRepository --|> JpaRepository
+    AtivoRepository ..> Ativo : persiste
+    Ativo --> StatusAtivo

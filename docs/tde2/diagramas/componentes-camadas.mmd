@@ -1,0 +1,35 @@
+flowchart TB
+    FE["Frontend<br/>Next.js<br/>(proxy: rewrites /api/*)"]
+    GW["API Gateway<br/>Spring Cloud Gateway :8080<br/>rota Path=/api/** · CORS"]
+
+    subgraph BE["Backend — Kotlin / Spring Boot :8081"]
+        direction TB
+        subgraph PRES["Apresentação"]
+            CTRL["Controllers<br/>ativo · colaborador · usuario<br/>manutencao · alocacao<br/>movimentacao · dashboard"]
+            EXH["ApiExceptionHandler<br/>(erros → HTTP)"]
+        end
+        subgraph APP["Aplicação (casos de uso)"]
+            SVC["Services<br/>@Transactional"]
+            PORT["Portas de leitura<br/>AtivoConsulta · ColaboradorConsulta<br/>ManutencaoConsulta · MovimentacaoConsulta"]
+        end
+        subgraph DOM["Domínio"]
+            ENT["Entities + Enums<br/>invariantes do negócio"]
+        end
+        subgraph INFRA["Infraestrutura"]
+            REPO["Repositories<br/>Spring Data JPA (interfaces)"]
+            FLY["Flyway<br/>V1 schema · V2 dados"]
+        end
+    end
+
+    DB[("MySQL 8.4")]
+
+    FE -->|HTTP /api/*| GW
+    GW -->|HTTP| CTRL
+    CTRL --> SVC
+    EXH -.->|traduz exceções| CTRL
+    SVC --> PORT
+    SVC --> REPO
+    SVC --> ENT
+    REPO --> ENT
+    REPO -->|JDBC| DB
+    FLY -->|migra| DB

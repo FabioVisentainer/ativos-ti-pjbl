@@ -1,0 +1,15 @@
+flowchart TB
+    NAV["Navegador<br/>localhost:3000"]
+    FE["Processo Node.js<br/>Next.js dev + rewrites /api/*<br/>:3000"]
+    subgraph DC["Docker Compose — projeto ativos-ti"]
+        direction TB
+        GW["ativos-gateway<br/>Spring Cloud Gateway<br/>:8080"]
+        BE["ativos-backend<br/>Kotlin + Spring Boot<br/>:8081"]
+        DB[("ativos-mysql<br/>MySQL 8.4<br/>:3306 (host 3307)")]
+        VOL[("volume mysql-data")]
+    end
+    NAV -->|HTTP| FE
+    FE -->|"HTTP /api/*"| GW
+    GW -->|HTTP| BE
+    BE -->|JDBC| DB
+    DB --- VOL

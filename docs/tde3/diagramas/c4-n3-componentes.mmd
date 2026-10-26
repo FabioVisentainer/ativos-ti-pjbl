@@ -1,0 +1,39 @@
+flowchart TB
+    subgraph BE["Backend Kotlin / Spring Boot — componentes por fatia vertical"]
+        direction TB
+        subgraph ATI["fatia ativo"]
+            direction LR
+            C1["AtivoController<br/>/api/ativos"] --> S1["AtivoService"] --> R1["AtivoRepository"]
+        end
+        subgraph COL["fatia colaborador"]
+            direction LR
+            C2["ColaboradorController<br/>/api/colaboradores"] --> S2["ColaboradorService"] --> R2["ColaboradorRepository"]
+        end
+        subgraph USU["fatia usuario"]
+            direction LR
+            C3["UsuarioController<br/>/api/usuarios"] --> S3["UsuarioService"] --> R3["UsuarioRepository"]
+        end
+        subgraph MAN["fatia manutencao"]
+            direction LR
+            C4["ManutencaoController<br/>/api/manutencoes"] --> S4["ManutencaoService"] --> R4["ManutencaoRepository"]
+        end
+        subgraph ALO["fatia alocacao"]
+            direction LR
+            C5["AlocacaoController<br/>/api/alocacoes"] --> S5["AlocacaoService"] --> R5["AlocacaoRepository"]
+        end
+        subgraph MOV["fatia movimentacao"]
+            direction LR
+            C6["MovimentacaoController<br/>/api/movimentacoes"] --> S6["MovimentacaoService"] --> R6["MovimentacaoRepository"]
+        end
+        subgraph DAS["fatia dashboard (sem entidade nem repositório)"]
+            direction LR
+            C7["DashboardController<br/>/api/dashboard"] --> S7["DashboardService"]
+        end
+        R1 ~~~ C2
+        R2 ~~~ C3
+        R3 ~~~ C4
+        R4 ~~~ C5
+        R5 ~~~ C6
+        R6 ~~~ C7
+        SH["shared: ApiExceptionHandler<br/>traduz exceções em HTTP"]
+    end

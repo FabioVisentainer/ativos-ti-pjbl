@@ -1,0 +1,61 @@
+flowchart TB
+    GW["API Gateway :8080"]
+
+    subgraph SHARED["shared (kernel)"]
+        EXC["Exceções · ApiError<br/>ApiExceptionHandler<br/>SituacaoPessoa"]
+    end
+
+    subgraph M_ATIVO["módulo ativo"]
+        direction LR
+        A_C["AtivoController"] --> A_S["AtivoService"] --> A_R["AtivoRepository"] --> A_E["Ativo"]
+        A_P(["AtivoConsulta"])
+        A_S -.implementa.-> A_P
+    end
+
+    subgraph M_COL["módulo colaborador"]
+        direction LR
+        C_C["ColaboradorController"] --> C_S["ColaboradorService"] --> C_R["ColaboradorRepository"] --> C_E["Colaborador"]
+        C_P(["ColaboradorConsulta"])
+        C_S -.implementa.-> C_P
+    end
+
+    subgraph M_MAN["módulo manutencao"]
+        direction LR
+        M_C["ManutencaoController"] --> M_S["ManutencaoService"] --> M_R["ManutencaoRepository"] --> M_E["Manutencao"]
+        M_P(["ManutencaoConsulta"])
+        M_S -.implementa.-> M_P
+    end
+
+    subgraph M_MOV["módulo movimentacao"]
+        direction LR
+        V_C["MovimentacaoController"] --> V_S["MovimentacaoService"] --> V_R["MovimentacaoRepository"] --> V_E["Movimentacao"]
+        V_P(["MovimentacaoConsulta"])
+        V_S -.implementa.-> V_P
+    end
+
+    subgraph M_ALO["módulo alocacao"]
+        direction LR
+        L_C["AlocacaoController"] --> L_S["AlocacaoService"] --> L_R["AlocacaoRepository"] --> L_E["Alocacao"]
+    end
+
+    subgraph M_USU["módulo usuario"]
+        direction LR
+        U_C["UsuarioController"] --> U_S["UsuarioService"] --> U_R["UsuarioRepository"] --> U_E["Usuario"]
+    end
+
+    subgraph M_DASH["módulo dashboard (sem entidade)"]
+        direction LR
+        D_C["DashboardController"] --> D_S["DashboardService"]
+    end
+
+    DB[("MySQL")]
+
+    GW --> A_C & C_C & M_C & V_C & L_C & U_C & D_C
+
+    %% dependências entre módulos: somente pelas portas *Consulta (DIP)
+    A_S -->|usa| C_P
+    D_S -->|usa| A_P
+    D_S -->|usa| M_P
+    D_S -->|usa| V_P
+
+    A_R & C_R & M_R & V_R & L_R & U_R --> DB

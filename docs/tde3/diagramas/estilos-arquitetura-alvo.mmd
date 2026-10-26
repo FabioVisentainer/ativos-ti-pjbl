@@ -1,0 +1,41 @@
+flowchart TB
+    subgraph CLI["Cliente"]
+        SH["Shell Next.js<br/>(microfrontend host)"]
+        MF1["MF Ativos"]
+        MF2["MF Dashboard"]
+        DS["Design System<br/>(pacote compartilhado)"]
+    end
+    GW["API Gateway<br/>(Spring Cloud Gateway)"]
+    BFF["BFF Web<br/>agrega chamadas para as telas"]
+    subgraph MS["Microsserviços (cada um com seu banco)"]
+        direction LR
+        SA["Serviço de Ativos"]
+        SC["Serviço de Colaboradores"]
+        SM["Serviço de Manutenções"]
+        SD["Serviço de Dashboard<br/>(modelo de leitura)"]
+        DBA[("DB Ativos")]
+        DBC[("DB Colaboradores")]
+        DBM[("DB Manutenções")]
+        DBD[("DB Leitura")]
+    end
+    BUS{{"Broker de eventos<br/>(ex.: Kafka)"}}
+    FAAS["Função serverless<br/>(ex.: relatório CSV, notificações)"]
+    SH --> MF1
+    SH --> MF2
+    MF1 -.-> DS
+    MF2 -.-> DS
+    MF1 --> GW
+    MF2 --> GW
+    GW --> BFF
+    BFF --> SA
+    BFF --> SC
+    BFF --> SM
+    BFF --> SD
+    SA --- DBA
+    SC --- DBC
+    SM --- DBM
+    SD --- DBD
+    SA -->|"AtivoCriado, AtivoBaixado"| BUS
+    SM -->|"ManutencaoRegistrada"| BUS
+    BUS -->|"consome"| SD
+    BUS -->|"consome"| FAAS

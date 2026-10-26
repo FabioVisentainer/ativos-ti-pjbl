@@ -1,0 +1,105 @@
+classDiagram
+    direction TB
+
+    class ApiExceptionHandler {
+        <<RestControllerAdvice>>
+    }
+
+    namespace ativo {
+        class AtivoController { <<Controller>> }
+        class AtivoService { <<Service>> }
+        class AtivoConsulta { <<interface>> }
+        class AtivoRepository { <<interface>> }
+        class Ativo { <<Entity>> }
+        class StatusAtivo { <<enumeration>> }
+    }
+
+    namespace colaborador {
+        class ColaboradorController { <<Controller>> }
+        class ColaboradorService { <<Service>> }
+        class ColaboradorConsulta { <<interface>> }
+        class ColaboradorRepository { <<interface>> }
+        class Colaborador { <<Entity>> }
+    }
+
+    namespace manutencao {
+        class ManutencaoController { <<Controller>> }
+        class ManutencaoService { <<Service>> }
+        class ManutencaoConsulta { <<interface>> }
+        class ManutencaoRepository { <<interface>> }
+        class Manutencao { <<Entity>> }
+    }
+
+    namespace movimentacao {
+        class MovimentacaoController { <<Controller>> }
+        class MovimentacaoService { <<Service>> }
+        class MovimentacaoConsulta { <<interface>> }
+        class MovimentacaoRepository { <<interface>> }
+        class Movimentacao { <<Entity>> }
+    }
+
+    namespace alocacao {
+        class AlocacaoController { <<Controller>> }
+        class AlocacaoService { <<Service>> }
+        class AlocacaoRepository { <<interface>> }
+        class Alocacao { <<Entity>> }
+    }
+
+    namespace usuario {
+        class UsuarioController { <<Controller>> }
+        class UsuarioService { <<Service>> }
+        class UsuarioRepository { <<interface>> }
+        class Usuario { <<Entity>> }
+    }
+
+    namespace dashboard {
+        class DashboardController { <<Controller>> }
+        class DashboardService { <<Service>> }
+    }
+
+    %% Camadas dentro de cada módulo: Controller -> Service -> Repository -> Entity
+    AtivoController --> AtivoService
+    AtivoService ..|> AtivoConsulta
+    AtivoService --> AtivoRepository
+    AtivoRepository ..> Ativo
+    Ativo --> StatusAtivo
+
+    ColaboradorController --> ColaboradorService
+    ColaboradorService ..|> ColaboradorConsulta
+    ColaboradorService --> ColaboradorRepository
+    ColaboradorRepository ..> Colaborador
+
+    ManutencaoController --> ManutencaoService
+    ManutencaoService ..|> ManutencaoConsulta
+    ManutencaoService --> ManutencaoRepository
+    ManutencaoRepository ..> Manutencao
+
+    MovimentacaoController --> MovimentacaoService
+    MovimentacaoService ..|> MovimentacaoConsulta
+    MovimentacaoService --> MovimentacaoRepository
+    MovimentacaoRepository ..> Movimentacao
+
+    AlocacaoController --> AlocacaoService
+    AlocacaoService --> AlocacaoRepository
+    AlocacaoRepository ..> Alocacao
+
+    UsuarioController --> UsuarioService
+    UsuarioService --> UsuarioRepository
+    UsuarioRepository ..> Usuario
+
+    DashboardController --> DashboardService
+
+    %% Entre módulos: SOMENTE por interfaces *Consulta (DIP)
+    AtivoService --> ColaboradorConsulta : exigirPorNome
+    DashboardService --> AtivoConsulta
+    DashboardService --> ManutencaoConsulta
+    DashboardService --> MovimentacaoConsulta
+
+    %% Relações JPA (chaves estrangeiras)
+    Ativo --> Colaborador : colaborador
+    Manutencao --> Ativo : ativo
+    Alocacao --> Ativo : ativo
+    Alocacao --> Colaborador : colaborador
+    Movimentacao --> Ativo : ativo
+    Movimentacao --> Colaborador : colaborador
+    Movimentacao --> Usuario : registradoPor

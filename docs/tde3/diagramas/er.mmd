@@ -1,0 +1,58 @@
+erDiagram
+    COLABORADOR ||--o{ ATIVO : "responsável (opcional)"
+    COLABORADOR ||--o{ ALOCACAO : "recebe"
+    COLABORADOR |o--o{ MOVIMENTACAO : "envolvido (opcional)"
+    ATIVO ||--o{ MANUTENCAO : "recebe"
+    ATIVO ||--o{ ALOCACAO : "é alocado em"
+    ATIVO ||--o{ MOVIMENTACAO : "sofre"
+    USUARIO ||--o{ MOVIMENTACAO : "registra"
+    COLABORADOR {
+        BIGINT id PK
+        VARCHAR nome
+        VARCHAR matricula UK
+        VARCHAR setor
+        VARCHAR situacao "ATIVO ou INATIVO"
+    }
+    USUARIO {
+        BIGINT id PK
+        VARCHAR nome
+        VARCHAR conta_corporativa UK
+        VARCHAR perfil "COLABORADOR, TECNICO_TI, GESTOR_TI"
+        DATETIME ultimo_acesso
+        VARCHAR situacao "ATIVO ou INATIVO"
+    }
+    ATIVO {
+        BIGINT id PK
+        VARCHAR tipo
+        VARCHAR marca
+        VARCHAR modelo
+        VARCHAR numero_patrimonio UK
+        VARCHAR numero_serie
+        VARCHAR status "EM_ESTOQUE, EM_USO, EM_MANUTENCAO, BAIXADO"
+        BIGINT colaborador_id FK
+        VARCHAR setor
+        DATE data_aquisicao
+        DECIMAL valor_aquisicao
+    }
+    MANUTENCAO {
+        BIGINT id PK
+        DATE data
+        BIGINT ativo_id FK
+        VARCHAR tipo "CORRETIVA ou PREVENTIVA"
+        VARCHAR descricao
+        DECIMAL custo
+    }
+    ALOCACAO {
+        BIGINT id PK
+        BIGINT ativo_id FK
+        BIGINT colaborador_id FK
+        DATE data_retirada
+    }
+    MOVIMENTACAO {
+        BIGINT id PK
+        DATE data
+        BIGINT ativo_id FK
+        VARCHAR operacao
+        BIGINT colaborador_id FK
+        BIGINT registrado_por_id FK
+    }
