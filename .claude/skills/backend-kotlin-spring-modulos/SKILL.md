@@ -47,6 +47,7 @@ Lançar `RegraDeNegocioException` (400), `RecursoNaoEncontradoException` (404) o
 - Service: teste unitário com MockK, sem Spring (`AtivoServiceTest`).
 - Controller: `MockMvcBuilders.standaloneSetup(controller).setControllerAdvice(ApiExceptionHandler())` (`AtivoControllerTest`).
 - Um teste por regra de negócio e por código de status relevante. Nome do teste descreve o comportamento.
+- Arquitetura: as regras deste documento são verificadas com ArchUnit em `src/test/kotlin/br/pucpr/ativos/arquitetura/`. Convenção nova = regra nova lá.
 
 ## Checklist antes de concluir
 1. `./gradlew :backend:test` verde. 2. Contrato JSON inalterado (ou `frontend/lib/types.ts` atualizado junto). 3. Nenhuma dependência cruzada entre módulos fora das `*Consulta`.

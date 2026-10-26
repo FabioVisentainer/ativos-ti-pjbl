@@ -2,6 +2,9 @@
 node_modules/
 frontend/node_modules/
 api/node_modules/
+# o projeto usa npm (package-lock.json); arquivos gerados ao instalar com pnpm ficam locais
+pnpm-lock.yaml
+pnpm-workspace.yaml
 
 # build do Next.js (frontend/, exportado como site estático)
 frontend/.next/
@@ -27,9 +30,12 @@ frontend/.env.local
 *.log
 npm-debug.log*
 .vscode/
+.idea/
+*.iml
 
 # Gradle / Kotlin (backend e gateway)
 .gradle/
+.kotlin/
 **/build/
 !gradle/wrapper/gradle-wrapper.jar
 *.class
